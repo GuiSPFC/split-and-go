@@ -14,6 +14,8 @@ export default function Home() {
     criarGrupo,
     adicionarIntegrante,
     removerIntegrante,
+    adicionarDespesa,
+    removerGrupo,
   } = useGrupos();
 
   return(
@@ -25,7 +27,9 @@ export default function Home() {
         <h2>Seus grupos</h2>
         <ListaGrupos grupos={grupos}
         aoAdicionarIntegrante={adicionarIntegrante}
-        aoRemoverIntegrante={removerIntegrante}/>
+        aoRemoverIntegrante={removerIntegrante}
+        aoAdicionarDespesa={adicionarDespesa}
+        aoRemoverGrupo={removerGrupo}/>
 
         {!mostrarFormulario && (
           <button type="button" onClick={()=> setMostrarFormulario(true)}>Criar grupo</button>

@@ -1,20 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import type { Grupo } from "../hooks/useGrupos";
+import { Grupo, DivisaoDespesa, TipoRateio, Moeda } from "../hooks/useGrupos";
+import FormularioDespesa from "./FormularioDespesa";
+import { calcularQuitacoes, calcularSaldos } from "../utils/calcularQuitacoes";
 
 type CartaoGrupoProps = {
     grupo: Grupo;
     aoAdicionarIntegrante: (idGrupo: number, nome: string) => void;
     aoRemoverIntegrante: (idGrupo: number, indiceIntegrante: number) => void;
+    aoAdicionarDespesa: (
+        idGrupo: number,
+        descricao: string,
+        valorCentavos: number,
+        pagador: string,
+        moeda: Moeda,
+        tipoRateio: TipoRateio,
+        divisoes: DivisaoDespesa[],) => void;
+    aoRemoverGrupo: (idGrupo: number) => void;
 };
 
+function formatarDinheiro(valorCentavos: number, moeda: Moeda) {
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: moeda,
+  }).format(valorCentavos / 100);
+}
 export default function CartaoGrupo({
     grupo,
     aoAdicionarIntegrante,
     aoRemoverIntegrante,
+    aoAdicionarDespesa,
+    aoRemoverGrupo,
 }: CartaoGrupoProps){
     const [nomeIntegrante, setNomeIntegrante] = useState("");
+    const saldos = calcularSaldos(grupo);
+    const quitacoes = calcularQuitacoes(grupo);
 
     function enviarFormulario(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -54,6 +75,99 @@ export default function CartaoGrupo({
 
                 <button type="submit">Adicionar Integrante</button>
             </form>
+
+            <section>
+                <h4>Despesas</h4>
+
+                {grupo.despesas.length === 0 ? (
+                    <p>Este grupo ainda não tem despesas</p>
+                ): (
+                    <ul>
+                        {grupo.despesas.map((despesa)=> (
+                            <li key={despesa.id}>
+                                <strong>{despesa.descricao}</strong>
+                                {" - "}
+                                {formatarDinheiro(despesa.valorCentavos, despesa.moeda)}
+                                <p>Pago por: {despesa.pagador}</p>
+                                <p>{despesa.tipoRateio === "igual"
+                                    ? "Divisão igualitaria:"
+                                    : despesa.tipoRateio === "valor"
+                                        ? "Divisão por valores fixos:"
+                                        : "Divisão por porcentagem:"}</p>
+                                <ul>
+                                    {despesa.divisoes.map((divisao)=>(
+                                        <li key={divisao.integrante}>
+                                            {divisao.integrante}:{""}
+                                            {formatarDinheiro(divisao.valorCentavos, despesa.moeda)}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+
+                <FormularioDespesa
+                    integrantes={grupo.integrantes}
+                    aoEnviar={(descricao, valorCentavos, pagador,moeda, tipoRateio, divisoes) => 
+                        aoAdicionarDespesa(
+                            grupo.id,
+                            descricao,
+                            valorCentavos,
+                            pagador,
+                            moeda,
+                            tipoRateio,
+                            divisoes,
+                        )
+                    }
+                />
+            </section>
+
+            <section>
+                <h4>Saldos</h4>
+
+                {saldos.map((saldo)=> {
+                    const valor = formatarDinheiro(
+                        Math.abs(saldo.saldoCentavos), saldo.moeda,
+                    );
+
+                    return (
+                        <p key={`${saldo.integrante}-${saldo.moeda}`}>
+                            <strong>{saldo.integrante}:</strong>{" "}
+                            {saldo.saldoCentavos > 0 ? `tem ${valor} a receber`: saldo.saldoCentavos < 0 ? `deve ${valor}` : "Está quite"}
+                        </p>
+                    )
+                })}
+            </section>
+
+            <section>
+                <h4>Plano de quitação</h4>
+
+                {quitacoes.length === 0 ? (
+                    <p>Não há pagamentos pendentes</p>
+                ): (
+                    <ul>
+                        {quitacoes.map((quitacao, indice)=>(
+                            <li key={`${quitacao.devedor}-${quitacao.credor}-${quitacao.moeda}-${indice}`}>
+                                {quitacao.devedor} paga{" "}
+                                {formatarDinheiro(quitacao.valorCentavos, quitacao.moeda)} para {" "}
+                                {quitacao.credor}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </section>
+
+                <button className="botao-remover-grupo"
+                type="button"
+                onClick={()=>{
+                    const confirmou = window.confirm(
+                        `Remover o grupo"${grupo.nome}" e todas as despesas dele?`,
+                    );
+                    if (confirmou) {
+                        aoRemoverGrupo(grupo.id);
+                    }
+                }}>Remover Grupo</button>
         </li>
     );
 }
