@@ -16,39 +16,69 @@
 }
 
 body {
+  min-height: 100vh;
   margin: 0;
-  background:
-    radial-gradient(ellipse at top left, #eeebff 0, transparent 35rem),
-    var(--fundo);
+  background: var(--fundo);
   color: var(--texto);
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.5;
 }
 
-main {
-  width: min(100% - 32px, 960px);
-  margin: 0 auto;
-  padding: 56px 0 80px;
+/* Fundo desfocado atrás do conteúdo */
+.pagina {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
 }
 
-main > h1 {
+.pagina::before {
+  position: fixed;
+  z-index: -1;
+  inset: -8px;
+  background:
+    linear-gradient(rgba(244, 246, 251, 0.40), rgba(244, 246, 251, 0.45)),
+    url("/fundo-viagem.jpg") center / cover no-repeat;
+  content: "";
+  filter: blur(5px);
+}
+
+/* Cabeçalho */
+.cabecalho {
+  padding: 24px 16px;
+  border-bottom: 1px solid rgba(227, 231, 239, 0.9);
+  background: rgba(255, 255, 255, 0.78);
+  text-align: center;
+  backdrop-filter: blur(8px);
+}
+
+.cabecalho h1 {
   margin: 0;
   color: var(--primaria);
-  font-size: clamp(2.25rem, 6vw, 3.5rem);
-  letter-spacing: -0.06em;
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: -0.05em;
 }
 
-main > p {
-  margin: 8px 0 32px;
+.cabecalho p {
+  margin: 4px 0 0;
   color: var(--texto-suave);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
 }
 
-main > section {
+/* Área principal */
+.conteudo {
+  width: min(100% - 32px, 1000px);
+  flex: 1;
+  margin: 0 auto;
+  padding: 36px 0 48px;
+}
+
+.secao-grupos {
   padding: 28px;
   border: 1px solid var(--borda);
   border-radius: 20px;
-  background: var(--cartao);
+  background: rgba(255, 255, 255, 0.96);
   box-shadow: var(--sombra);
 }
 
@@ -58,12 +88,14 @@ h4 {
   line-height: 1.25;
 }
 
-main > section > h2 {
+.secao-grupos > h2 {
   margin: 0 0 20px;
   font-size: 1.5rem;
+  text-align: center;
 }
 
-main > section > ul {
+/* Cartões dos grupos */
+.secao-grupos > ul {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 350px), 1fr));
   gap: 18px;
@@ -72,44 +104,72 @@ main > section > ul {
   list-style: none;
 }
 
-main > section > ul > li {
+.secao-grupos > ul > li {
+  display: flex;
   min-width: 0;
+  flex-direction: column;
   padding: 22px;
   border: 1px solid var(--borda);
   border-radius: 16px;
-  background: #fff;
+  background: var(--cartao);
   box-shadow: 0 4px 14px rgba(24, 32, 51, 0.04);
 }
 
-main > section > ul > li > h3 {
+.secao-grupos > ul > li > h3 {
   margin: 0 0 18px;
   font-size: 1.3rem;
+  text-align: center;
 }
 
-main > section > ul > li > h4,
-main > section > ul > li > section > h4 {
+.secao-grupos > ul > li > h4,
+.secao-grupos > ul > li > section > h4 {
   margin: 22px 0 10px;
   color: var(--texto);
   font-size: 1rem;
 }
 
-main > section > ul > li > section {
+.secao-grupos > ul > li > section {
   margin-top: 20px;
   padding-top: 4px;
   border-top: 1px solid var(--borda);
 }
 
-main > section > ul > li ul {
-  margin: 8px 0;
-  padding-left: 20px;
+.secao-grupos > ul > li > section > h4 {
+  text-align: center;
 }
 
-main > section > ul > li section > ul {
+/* Integrantes */
+.secao-grupos > ul > li > ul {
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
-main > section > ul > li section > ul > li {
+.secao-grupos > ul > li > ul > li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+  padding-bottom: 8px;
+}
+
+.secao-grupos > ul > li > ul > li:not(:last-child) {
+  border-bottom: 1px solid var(--borda);
+}
+
+/* Despesas e divisões */
+.secao-grupos > ul > li ul {
+  padding-left: 20px;
+}
+
+.secao-grupos > ul > li > section > ul {
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.secao-grupos > ul > li > section > ul > li {
   margin: 10px 0;
   padding: 13px 15px;
   border: 1px solid var(--borda);
@@ -117,15 +177,16 @@ main > section > ul > li section > ul > li {
   background: #fafaff;
 }
 
-main > section > ul > li section > ul > li strong {
+.secao-grupos > ul > li > section > ul > li strong {
   color: var(--primaria);
 }
 
-main > section > ul > li section > ul > li p {
+.secao-grupos > ul > li > section > ul > li p {
   margin: 8px 0 0;
   color: var(--texto-suave);
 }
 
+/* Formulários e campos */
 p {
   color: var(--texto-suave);
 }
@@ -184,6 +245,7 @@ fieldset input[type="checkbox"] {
   accent-color: var(--primaria);
 }
 
+/* Botões */
 button {
   width: fit-content;
   min-height: 42px;
@@ -195,9 +257,7 @@ button {
   font: inherit;
   font-weight: 700;
   cursor: pointer;
-  transition:
-    background 150ms ease,
-    transform 150ms ease;
+  transition: background 150ms ease, transform 150ms ease;
 }
 
 button:hover {
@@ -218,8 +278,20 @@ button[aria-label^="Remover"] {
   color: var(--perigo);
 }
 
-button[aria-label^="Remover"]:hover {
+button[aria-label^="Remover"]:hover,
+button.botao-remover-grupo:hover {
   background: #ffe2df;
+}
+
+button.botao-remover-grupo {
+  align-self: center;
+  margin-top: auto;
+  background: #fff1f0;
+  color: var(--perigo);
+}
+
+.secao-grupos > button {
+  margin-top: 20px;
 }
 
 form p[role="alert"] {
@@ -228,45 +300,22 @@ form p[role="alert"] {
   font-weight: 600;
 }
 
-main > section > button {
-  margin-top: 20px;
-}
-
-@media (max-width: 600px) {
-  main {
-    width: min(100% - 20px, 960px);
-    padding-top: 32px;
-  }
-
-  main > section {
-    padding: 18px;
-    border-radius: 16px;
-  }
-
-  main > section > ul > li {
-    padding: 17px;
-  }
-}
-
-main > h1,
-main > p,
-main > section > h2 {
+/* Rodapé */
+.rodape {
+  padding: 18px 16px;
+  border-top: 1px solid rgba(227, 231, 239, 0.9);
+  background: rgba(255, 255, 255, 0.78);
   text-align: center;
+  backdrop-filter: blur(8px);
 }
 
-main > section > ul > li > ul {
-  padding: 0;
-  list-style: none;
+.rodape p {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 0.9rem;
 }
 
-main > section > ul > li > ul > li {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 12px;
-  margin: 8px 0;
-}
-
+/* Esconde as setas dos campos numéricos */
 input[type="number"] {
   appearance: textfield;
   -moz-appearance: textfield;
@@ -278,40 +327,22 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
 }
 
-main > section > ul > li > h3 {
-  text-align: center;
-}
+@media (max-width: 600px) {
+  .cabecalho {
+    padding: 20px 12px;
+  }
 
-main > section > ul > li > section:first-of-type > h4 {
-  text-align: center;
-}
+  .conteudo {
+    width: min(100% - 20px, 1000px);
+    padding: 24px 0 32px;
+  }
 
-main > section > ul > li > form button {
-  justify-self: center;
-}
+  .secao-grupos {
+    padding: 18px;
+    border-radius: 16px;
+  }
 
-main > section > ul > li > ul > li:not(:last-child) {
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--borda);
-}
-
-button.botao-remover-grupo {
-  display: block;
-  margin: 0 auto 18px;
-  background: #fff1f0;
-  color: var(--perigo);
-}
-
-button.botao-remover-grupo:hover {
-  background: #ffe2df;
-}
-
-main > section > ul > li {
-  display: flex;
-  flex-direction: column;
-}
-
-button.botao-remover-grupo {
-  align-self: center;
-  margin-top: auto;
+  .secao-grupos > ul > li {
+    padding: 17px;
+  }
 }

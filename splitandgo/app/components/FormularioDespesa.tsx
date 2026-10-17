@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { calcularDivisoesDespesa } from "../utils/calcularDivisoesDespesa";
 import type { DivisaoDespesa, Moeda, TipoRateio,} from "../hooks/useGrupos";
 
+//Define a lista de integrantes e a função chamada quando salva despesa
 type FormularioDespesaProps = {
   integrantes: string[];
   aoEnviar: (
@@ -20,6 +21,7 @@ export default function FormularioDespesa({
   integrantes,
   aoEnviar,
 }: FormularioDespesaProps) {
+  //Estados dos campos que o usuário preenche
   const [descricao, setDescricao] = useState("");
   const [valor, setValor] = useState("");
   const [pagador, setPagador] = useState(integrantes[0] ?? "");
@@ -29,6 +31,7 @@ export default function FormularioDespesa({
   const [erroRateio, setErroRateio] = useState("");
   const [moeda, setMoeda] = useState<Moeda>("BRL");
 
+  //Atualiza os participantes selecionados quando o grupo muda e se o pagador sair do grupo seleciona o primeiro integrante que sobrou
   useEffect(() => {
     setParticipantesRateio(integrantes);
 
@@ -37,6 +40,7 @@ export default function FormularioDespesa({
     }
   }, [integrantes, pagador]);
 
+  //Adiciona ou remove uma pessoa da divisão de despesa
   function alternarParticipante(nome: string) {
     setParticipantesRateio((atuais) =>
       atuais.includes(nome)
@@ -46,6 +50,7 @@ export default function FormularioDespesa({
     setErroRateio("");
   }
 
+  //valida os dados, calcula partes e envia a despesa para o componente pai
   function enviarFormulario(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -53,6 +58,7 @@ export default function FormularioDespesa({
     const valorNumerico = Number(valor.replace(",", "."));
     const valorCentavos = Math.round(valorNumerico * 100);
 
+    //Impede de salvar uma despesa incompleta ou sem participantes no rateio
     if (
       !descricaoFinal ||
       !Number.isFinite(valorNumerico) ||
@@ -63,17 +69,20 @@ export default function FormularioDespesa({
       return;
     }
 
+    //Assoscia o valor digitado por cada pessoa ao nome dela
     const dadosParticipantes = participantesRateio.map((integrante) => ({
       integrante,
       valorInformado: valoresInformados[integrante] ?? "",
     }));
 
+    //Usa a função para calcular a divisão escolhida
     const divisoes = calcularDivisoesDespesa(
       tipoRateio,
       valorCentavos,
       dadosParticipantes,
     );
 
+    //A divisão retorna null se os valores não forem válidos
     if (divisoes === null) {
       setErroRateio(
         tipoRateio === "valor"
@@ -92,12 +101,14 @@ export default function FormularioDespesa({
       divisoes,
     );
 
+    //Limpa os campos depois de salvar uma despesa
     setDescricao("");
     setValor("");
     setValoresInformados({});
     setErroRateio("");
   }
 
+  //O rateio só pode ser inserido depois adicionar alguem no grupo
   if (integrantes.length === 0) {
     return <p>Adicione integrantes ao grupo antes de cadastrar despesas.</p>;
   }
@@ -109,7 +120,7 @@ export default function FormularioDespesa({
         id={`descricao-${integrantes[0]}`}
         value={descricao}
         onChange={(event) => setDescricao(event.target.value)}
-        placeholder="Ex.: compras do mercado"
+        placeholder="Ex.: Gasolina"
         required
       />
 
@@ -121,7 +132,7 @@ export default function FormularioDespesa({
         step="0.01"
         value={valor}
         onChange={(event) => setValor(event.target.value)}
-        placeholder="Ex.: 125,50"
+        placeholder="Ex.: 125,20"
         required
       />
 
@@ -150,6 +161,7 @@ export default function FormularioDespesa({
         ))}
       </select>
 
+      {/* Permite escolher quais integrantes participarão do rateio */}
       <fieldset>
         <legend>Quem vai dividir esta despesa?</legend>
 
@@ -180,7 +192,8 @@ export default function FormularioDespesa({
         <option value="valor">Por valores fixos</option>
         <option value="porcentagem">Por porcentagem</option>
       </select>
-
+      
+      {/* Mostra campos extras quando o rateio não é igualitário */}
       {tipoRateio !== "igual" && (
         <fieldset>
           <legend>

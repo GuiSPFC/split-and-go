@@ -1,5 +1,6 @@
 "use client";
 
+//Define os dados e as funções recebidas da página principal
 type FormularioGrupoProps = {
     nomeGrupo: string;
     aoAlterarNome: (nome: string) => void;
@@ -7,6 +8,7 @@ type FormularioGrupoProps = {
     aoCancelar: () => void;
 };
 
+//Formulário controlado
 export default function FormularioGrupo({
     nomeGrupo,
     aoAlterarNome,
@@ -14,6 +16,7 @@ export default function FormularioGrupo({
     aoCancelar,
 }: FormularioGrupoProps){
     return (
+        //a página principal recebeo envio e cria o grupo
         <form onSubmit={aoEnviar}>
             <label htmlFor="nomeGrupo">Nome do grupo</label>
             <input

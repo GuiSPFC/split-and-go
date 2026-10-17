@@ -5,6 +5,8 @@ import { Grupo, DivisaoDespesa, TipoRateio, Moeda } from "../hooks/useGrupos";
 import FormularioDespesa from "./FormularioDespesa";
 import { calcularQuitacoes, calcularSaldos } from "../utils/calcularQuitacoes";
 
+
+//Define os dados e ações que o cartão recebe do componente pai
 type CartaoGrupoProps = {
     grupo: Grupo;
     aoAdicionarIntegrante: (idGrupo: number, nome: string) => void;
@@ -20,6 +22,7 @@ type CartaoGrupoProps = {
     aoRemoverGrupo: (idGrupo: number) => void;
 };
 
+//Converte centavos para o formato de dinheiro da moeda escolhida
 function formatarDinheiro(valorCentavos: number, moeda: Moeda) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -33,10 +36,12 @@ export default function CartaoGrupo({
     aoAdicionarDespesa,
     aoRemoverGrupo,
 }: CartaoGrupoProps){
+    //Guarda o texto digitado no campo de integrante e calcula os saldos e as transferencias para o grupo
     const [nomeIntegrante, setNomeIntegrante] = useState("");
     const saldos = calcularSaldos(grupo);
     const quitacoes = calcularQuitacoes(grupo);
 
+    //envia o novo integrante e limpa o campo após o envio
     function enviarFormulario(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         aoAdicionarIntegrante(grupo.id, nomeIntegrante);
@@ -49,6 +54,7 @@ export default function CartaoGrupo({
 
             <h4>Integrantes</h4>
 
+            {/* Mostra uma mensagem quando o grupo ainda esta sem integrantes */}
             {grupo.integrantes.length === 0 ? (
             <p>Este grupo ainda não tem integrantes</p>
             ) : (
@@ -79,6 +85,7 @@ export default function CartaoGrupo({
             <section>
                 <h4>Despesas</h4>
 
+                {/* Lista as despesas ou informa que ainda não tem nenhuma */}
                 {grupo.despesas.length === 0 ? (
                     <p>Este grupo ainda não tem despesas</p>
                 ): (
@@ -106,7 +113,7 @@ export default function CartaoGrupo({
                         ))}
                     </ul>
                 )}
-
+                {/* O formulario envia os dados da despesa junto com o ID do grupo */}
                 <FormularioDespesa
                     integrantes={grupo.integrantes}
                     aoEnviar={(descricao, valorCentavos, pagador,moeda, tipoRateio, divisoes) => 
@@ -125,7 +132,8 @@ export default function CartaoGrupo({
 
             <section>
                 <h4>Saldos</h4>
-
+                
+                {/* Exibe quanto cada integrante deve ou tem a receber por moeda*/}
                 {saldos.map((saldo)=> {
                     const valor = formatarDinheiro(
                         Math.abs(saldo.saldoCentavos), saldo.moeda,
@@ -143,6 +151,7 @@ export default function CartaoGrupo({
             <section>
                 <h4>Plano de quitação</h4>
 
+                {/* Mostra as transferencias necessarias para quitar as dívidas */}
                 {quitacoes.length === 0 ? (
                     <p>Não há pagamentos pendentes</p>
                 ): (
@@ -158,6 +167,7 @@ export default function CartaoGrupo({
                 )}
             </section>
 
+                {/* Pede confirmação antes de apagar o grupo*/}
                 <button className="botao-remover-grupo"
                 type="button"
                 onClick={()=>{

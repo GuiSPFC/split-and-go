@@ -1,14 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
+//Opções de divisão e moedas 
 export type TipoRateio = "igual" | "valor" | "porcentagem";
 export type Moeda = "BRL" | "USD" | "EUR";
 
+//parte da despesa atribuida a um integrante
 export type DivisaoDespesa = {
     integrante: string;
     valorCentavos: number;
 };
 
+//dados que formam uma despesa
 export type Despesa = {
     id: number;
     descricao: string;
@@ -19,6 +23,7 @@ export type Despesa = {
     divisoes: DivisaoDespesa[];
 };
 
+//dados que formam um grupo
 export type Grupo = {
     id: number;
     nome: string;
@@ -27,11 +32,13 @@ export type Grupo = {
 };
 
 export function useGrupos() {
+    //Estados usados pela página e pelos formulários
     const [grupos, setGrupos] = useState<Grupo[]>([]);
     const [nomeGrupo, setNomeGrupo] = useState("");
     const [mostrarFormulario, setMostrarFormulario] = useState(false);
     const [carregouGrupos, setCarregouGrupos] = useState(false);
     
+    //Carrega os grupos salvos no navegador
     useEffect(() => {
     try {
         const dadosSalvos = localStorage.getItem("splitandgo-grupos");
@@ -50,12 +57,14 @@ export function useGrupos() {
     }
     }, []);
 
+    //Salva os grupos sempre que a lista muda e espera o carregamento para não sobrescrever os dados
     useEffect(() => {
     if (!carregouGrupos) return;
 
     localStorage.setItem("splitandgo-grupos", JSON.stringify(grupos));
     }, [grupos, carregouGrupos]);
 
+    //Cria um grupo
     function criarGrupo(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
@@ -77,6 +86,7 @@ export function useGrupos() {
         setMostrarFormulario(false);
     }
 
+    //adiciona um integrante no grupo
     function adicionarIntegrante(idGrupo: number, nomeIntegrante: string) {
         const nome = nomeIntegrante.trim();
         if (!nome) return;
@@ -87,6 +97,7 @@ export function useGrupos() {
       );
     }
 
+    //Remove um integrante
     function removerIntegrante(idGrupo: number, indiceIntegrante: number) {
         setGrupos ((gruposAtuais)=>
             gruposAtuais.map((grupo)=>
@@ -96,11 +107,13 @@ export function useGrupos() {
         );
     }
 
+    //Remove o grupo
     function removerGrupo (idGrupo: number) {
         setGrupos((gruposAtuais)=>
             gruposAtuais.filter((grupo)=> grupo.id !== idGrupo),);
     }
 
+    //Valida os dados e adiciona uma despesa no grupo
     function adicionarDespesa(
     idGrupo: number,
     descricao: string,
@@ -116,6 +129,7 @@ export function useGrupos() {
         return;
     }
 
+    //só altera o grupo escolhido e verifica se o pagador pertence a ele
     setGrupos((gruposAtuais) =>
         gruposAtuais.map((grupo) => {
         if (grupo.id !== idGrupo || !grupo.integrantes.includes(pagador)) {
@@ -125,14 +139,20 @@ export function useGrupos() {
         const integrantesDivididos = divisoes.map(
             (divisao) => divisao.integrante,
         );
+
+        //Cada integrante só pode aparecer uma vez na divisão das despesas
         const divisaoSemRepeticoes =
             new Set(integrantesDivididos).size === divisoes.length;
+
+        //Verifica se todos fazem parte do grupo
         const divisaoValida = divisoes.every(
             (divisao) =>
             grupo.integrantes.includes(divisao.integrante) &&
             Number.isInteger(divisao.valorCentavos) &&
             divisao.valorCentavos >= 0,
         );
+
+        //Confere se a soma das partes é igual ao total da despesa
         const somaDivisoes = divisoes.reduce(
             (total, divisao) => total + divisao.valorCentavos,
             0,
@@ -156,6 +176,7 @@ export function useGrupos() {
             divisoes,
         };
 
+        //Retorna uma cópia do grupo com a nova despesa
         return {
             ...grupo,
             despesas: [...grupo.despesas, novaDespesa],
@@ -164,6 +185,7 @@ export function useGrupos() {
     );
     }
 
+    //Disponibiliza os dados e as ações para a pagina e os componentes
     return {
         grupos,
         nomeGrupo,

@@ -1,6 +1,7 @@
 import CartaoGrupo from "./CartaoGrupo";
 import type { Grupo, Moeda, TipoRateio, DivisaoDespesa } from "../hooks/useGrupos";
 
+//Define a lista de grupos e as ações que serão passadas aos cartões
 type ListaGruposProps = {
   grupos: Grupo[];
   aoAdicionarIntegrante: (idGrupo: number, nome: string) => void;
@@ -29,6 +30,7 @@ export default function ListaGrupos({
 
   return (
     <ul>
+      {/* Percorre os grupos e cria um cartão para cada um */}
       {grupos.map((grupo) => (
         <CartaoGrupo
           key={grupo.id}
