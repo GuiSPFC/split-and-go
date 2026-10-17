@@ -4,8 +4,8 @@ Aplicação para organizar grupos e dividir despesas de viagens. O sistema permi
 
 ## Links
 
-- **Aplicação publicada:** [LINK](https://split-and-go.vercel.app/)
-- **Quadro do projeto:** [LINK](https://github.com/users/GuiSPFC/projects/3)
+- **Aplicação publicada:** [Split&Go](https://split-and-go.vercel.app/)
+- **Quadro do projeto:** [GitHub Projects](https://github.com/users/GuiSPFC/projects/3)
 
 ## Funcionalidades
 
