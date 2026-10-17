@@ -124,7 +124,7 @@ export default function FormularioDespesa({
         required
       />
 
-      <label htmlFor={`valor-${integrantes[0]}`}>Valor total em reais</label>
+      <label htmlFor={`valor-${integrantes[0]}`}>Valor gasto</label>
       <input
         id={`valor-${integrantes[0]}`}
         type="number"
