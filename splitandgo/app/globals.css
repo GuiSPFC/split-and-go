@@ -271,6 +271,13 @@ button:disabled {
   transform: none;
 }
 
+button.botao-remover{
+  align-self: center;
+  margin-top: auto;
+  background: #fff1f0;
+  color: var(--perigo);
+}
+
 button[aria-label^="Remover"] {
   min-height: 32px;
   padding: 5px 10px;
@@ -325,6 +332,24 @@ input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
   -webkit-appearance: none;
+}
+
+/* Abre mais espaço para os cartões */
+.conteudo {
+  width: min(100% - 32px, 1600px);
+}
+
+/* Organiza os grupos em tantas colunas quanto couberem */
+.lista-grupos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.lista-grupos > li {
+  min-width: 0;
 }
 
 @media (max-width: 600px) {

@@ -185,6 +185,19 @@ export function useGrupos() {
     );
     }
 
+    function removerDespesa(idGrupo: number, idDespesa: number) {
+        setGrupos((gruposAtuais)=>
+            gruposAtuais.map((grupo)=>
+                grupo.id === idGrupo
+                    ?{
+                        ...grupo, despesas: grupo.despesas.filter(
+                            (despesa) => despesa.id !==idDespesa
+                        )
+                    }: grupo
+                )
+            )
+    }
+
     //Disponibiliza os dados e as ações para a pagina e os componentes
     return {
         grupos,
@@ -197,5 +210,6 @@ export function useGrupos() {
         removerIntegrante,
         adicionarDespesa,
         removerGrupo,
+        removerDespesa,
     };
 }

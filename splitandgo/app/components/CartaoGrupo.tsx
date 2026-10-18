@@ -20,6 +20,7 @@ type CartaoGrupoProps = {
         tipoRateio: TipoRateio,
         divisoes: DivisaoDespesa[],) => void;
     aoRemoverGrupo: (idGrupo: number) => void;
+    aoRemoverDespesa: (idGrupo: number, idDespesa: number)=>void;
 };
 
 //Converte centavos para o formato de dinheiro da moeda escolhida
@@ -35,6 +36,7 @@ export default function CartaoGrupo({
     aoRemoverIntegrante,
     aoAdicionarDespesa,
     aoRemoverGrupo,
+    aoRemoverDespesa,
 }: CartaoGrupoProps){
     //Guarda o texto digitado no campo de integrante e calcula os saldos e as transferencias para o grupo
     const [nomeIntegrante, setNomeIntegrante] = useState("");
@@ -109,6 +111,18 @@ export default function CartaoGrupo({
                                         </li>
                                     ))}
                                 </ul>
+
+                                <button
+                                    className="botao-remover" type="button" onClick={()=>{
+                                        const confirmou = window.confirm(
+                                            `Remover a despesa "${despesa.descricao}"?`
+                                        );
+
+                                        if (confirmou) {
+                                            aoRemoverDespesa(grupo.id, despesa.id);
+                                        }
+                                    }}
+                                >Remover despesa</button>
                             </li>
                         ))}
                     </ul>

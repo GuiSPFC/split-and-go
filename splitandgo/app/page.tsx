@@ -17,6 +17,7 @@ export default function Home() {
     removerIntegrante,
     adicionarDespesa,
     removerGrupo,
+    removerDespesa,
   } = useGrupos();
 
   return(
@@ -37,6 +38,7 @@ export default function Home() {
             aoRemoverIntegrante={removerIntegrante}
             aoAdicionarDespesa={adicionarDespesa}
             aoRemoverGrupo={removerGrupo}
+            aoRemoverDespesa={removerDespesa}
           />
 
           {/*Mostra o botão enquanto o formulario de criação está fechado*/}

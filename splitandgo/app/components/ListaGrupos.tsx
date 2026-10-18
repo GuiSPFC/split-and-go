@@ -15,6 +15,7 @@ type ListaGruposProps = {
     tipoRateio: TipoRateio,
     divisoes: DivisaoDespesa[],) => void;
     aoRemoverGrupo: (idGrupo: number) => void;
+    aoRemoverDespesa: (idGrupo: number, idDespesa: number)=> void;
 };
 
 export default function ListaGrupos({
@@ -23,13 +24,14 @@ export default function ListaGrupos({
   aoRemoverIntegrante,
   aoAdicionarDespesa,
   aoRemoverGrupo,
+  aoRemoverDespesa,
 }: ListaGruposProps) {
   if (grupos.length === 0) {
     return <p>Você ainda não tem grupos</p>;
   }
 
   return (
-    <ul>
+    <ul className="lista-grupos">
       {/* Percorre os grupos e cria um cartão para cada um */}
       {grupos.map((grupo) => (
         <CartaoGrupo
@@ -39,6 +41,7 @@ export default function ListaGrupos({
           aoRemoverIntegrante={aoRemoverIntegrante}
           aoAdicionarDespesa={aoAdicionarDespesa}
           aoRemoverGrupo={aoRemoverGrupo}
+          aoRemoverDespesa={aoRemoverDespesa}
         />
       ))}
     </ul>
