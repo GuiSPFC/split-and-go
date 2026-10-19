@@ -60,18 +60,29 @@ Criar testes automatizados para as regras de rateio, saldos, planos de quitaçã
 ### Pré-requisitos
 
 - Node.js instalado.
-- npm instalado.
 
 ### Instalação e execução
 
-Na pasta do projeto, execute:
+1. Clone o repositório do projeto no seu computador.
+
+```bash
+   git clone https://github.com/GuiSPFC/split-and-go.git
+```
+
+2. Entre na pasta da aplicação:
+
+```bash
+cd split-and-go/splitandgo
+```
+
+3. Na pasta do projeto instale as dependências e inicie o projeto rodando o comando:
 
 ```bash
 npm install
 npm run dev
 ```
 
-Depois, acesse [http://localhost:3000](http://localhost:3000).
+4. Depois, acesse [http://localhost:3000](http://localhost:3000).
 
 ## Regras de rateio e casos de borda
 
